@@ -96,7 +96,7 @@ function login(next){
         console.log(Style("正在登录...","bold","yellow"));
         utils.autoRetry({
             promise:function (){
-                return request.post("https://219.136.245.112/security-server/auth.do",{
+                return request.post("https://auth.pconline.com.cn/security-server/auth.do",{
                     "username":username,
                     "password":password,
                     "return":"http://caiji.pchouse.com.cn/admin/login.jsp"
@@ -119,10 +119,10 @@ function getSourceHTML(url,next){
         resolve:function (data){
             data = parser.decode(data,rule.charset);
             var $ = parser.load(data).$;
-            if (!rule.footer($)){
-                return getSourceHTML(url,next);
-            }
-            else {
+            // if (!rule.footer($)){
+            //     return getSourceHTML(url,next);
+            // }
+            // else {
                 next({
                     title:rule.title($),
                     description:rule.description($),
@@ -130,7 +130,7 @@ function getSourceHTML(url,next){
                         .sort((a,b)=>b.accept - a.accept || b.text.length - a.text.length)
                         .filter(v=>v.text.length > 35)
                 });
-            }
+            // }
         },
         reject:function (){
             next({
@@ -258,7 +258,7 @@ function getQuestionForm(item,next){
 }
 
 function getAnswersFromSource(item,next){
-    console.log("正在采集问题答案...");
+    console.log("正在从"+item.source+"采集问题答案...");
     getSourceHTML(item.source,function (dict){
         console.log("答案采集完成！");
         item.selected =dict.answers;
